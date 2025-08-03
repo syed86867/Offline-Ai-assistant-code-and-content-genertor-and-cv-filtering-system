@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ CV Magic Filter ✨</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Font Awesome icons as SVG background for offline use */
+        .fa-filter {
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%236C63FF' d='M3.9 54.9C10.5 40.9 24.5 32 40 32H472c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L320 320.9V448c0 12.1-6.8 23.2-17.7 28.6s-23.8 4.3-33.5-3l-64-48c-8.1-6-12.8-15.5-12.8-25.6V320.9L9 97.3C-.7 85.4-2.8 68.8 3.9 54.9z'/%3E%3C/svg%3E") no-repeat center center;
+            width: 1em;
+            height: 1em;
+            display: inline-block;
+        }
+        /* Add similar for other icons you need */
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/" class="logo">Llama-3 AI</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="../code_writing.html">Code</a>
+                <a href="../content_writing.html">Content</a>
+                <a href="#">CV Filtering</a>
+                <a href="../about.html">About Agent</a>
+            </div>
+        </nav>
+    </header>
+    <div class="main-container">
+        <h1><span class="fa-filter"></span> CV Magic Filter</h1>
+        
+        <div class="input-section">
+            <label for="selected-folder"><span class="fa-folder"></span> CV Folder Path:</label>
+            <div class="folder-select">
+                <input type="text" id="selected-folder" placeholder="Paste folder path or browse">
+                <button id="choose-folder"><span class="fa-folder-open"></span> Browse</button>
+                <input type="file" id="folder-picker" webkitdirectory multiple style="display:none">
+            </div>
+            <div class="path-options">
+                <span class="fa-lightbulb"></span>
+                <small>Tip: You can paste a folder path or browse to select one</small>
+            </div>
+        </div>
+
+        <div class="input-section">
+            <label for="skills-input"><span class="fa-search"></span> Skills to Search:</label>
+            <input type="text" id="skills-input" placeholder="e.g., Python, Java, Project Management">
+            <button id="filter-button"><span class="fa-filter"></span> Find Matching CVs</button>
+        </div>
+
+        <div id="loading" class="loading-message">
+            <span class="fa-spinner fa-spin"></span> Scanning CVs... Magic in progress!
+        </div>
+
+        <div class="results-section">
+            <h3><span class="fa-file-alt"></span> Discovered Talents:</h3>
+            <div id="results-container">
+                <div class="empty-state">
+                    <span class="fa-file-circle-question"></span>
+                    <div>Your search results will appear here</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

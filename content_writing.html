@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Writing - Llama-3 AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --glass: rgba(255, 255, 255, 0.2);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --glass-highlight: rgba(255, 255, 255, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e6f0ff 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 8s ease infinite;
+            background-size: 200% 200%;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(67, 97, 238, 0.2), transparent);
+            transition: all 0.6s ease;
+        }
+        
+        .nav-links a:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+        
+        .nav-links a:hover::before {
+            left: 100%;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            animation: fadeIn 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--secondary);
+            font-size: 2.5rem;
+            background: linear-gradient(to right, var(--secondary), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 0.5rem;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            border-radius: 2px;
+        }
+        
+        .input-group {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--glass-border);
+            transition: all 0.4s ease;
+        }
+        
+        .input-group:hover {
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            transform: translateY(-3px);
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 1.2rem;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            min-height: 180px;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            resize: vertical;
+            transition: all 0.3s ease;
+            background-color: rgba(248, 249, 250, 0.7);
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            background-color: white;
+            box-shadow: 0 0 0 4px rgba(72, 149, 239, 0.2), inset 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 1rem 2.2rem;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 15px rgba(67, 97, 238, 0.3);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            z-index: -1;
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 20px rgba(67, 97, 238, 0.4);
+        }
+        
+        .btn:hover::before {
+            opacity: 1;
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.7;
+            transform: none !important;
+            cursor: not-allowed;
+            background: linear-gradient(135deg, #ccc, #aaa);
+        }
+        
+        .result-container {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            min-height: 200px;
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--glass-border);
+            transition: all 0.4s ease;
+        }
+        
+        .result-container:hover {
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .content-output {
+            line-height: 1.8;
+            white-space: pre-wrap;
+            animation: fadeInUp 0.6s ease;
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .content-output h2, 
+        .content-output h3 {
+            color: var(--secondary);
+            margin: 1.5rem 0 1rem;
+            position: relative;
+            padding-left: 1rem;
+        }
+        
+        .content-output h2::before,
+        .content-output h3::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 60%;
+            width: 4px;
+            background: linear-gradient(to bottom, var(--primary), var(--accent));
+            border-radius: 2px;
+        }
+        
+        .content-output p {
+            margin-bottom: 1.2rem;
+            color: #444;
+        }
+        
+        .content-output ul, 
+        .content-output ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+        
+        .content-output li {
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+        
+        .content-output ul li::before {
+            content: '•';
+            color: var(--accent);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+        
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            color: var(--primary);
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(72, 149, 239, 0.2);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .loading-spinner::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border: 4px solid transparent;
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1.5s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .placeholder-text {
+            text-align: center;
+            color: #6c757d;
+            font-size: 1.1rem;
+            padding: 2rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(67, 97, 238, 0.2);
+            border-radius: 50%;
+            animation: float linear infinite;
+        }
+        
+        @keyframes float {
+            to { transform: translateY(-100vh); }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .input-group,
+            .result-container {
+                padding: 1.5rem;
+            }
+            
+            .nav-links {
+                gap: 0.8rem;
+            }
+            
+            .nav-links a {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <header>
+        <nav>
+            <a href="./content_writing.html" class="logo">TinyLlama Model</a>
+            <div class="nav-links">
+                <a href="./index.html">Home</a>
+                <a href="/code_writing.html">Code</a>
+                <a href="/content_writing.html">Content</a>
+                <a href="./CvFiltering-Final version/cv_filtering.html">CV Filtering</a>
+                <a href="./about.html">About Agent</a>
+            </div>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <h1 class="animate__animated animate__fadeIn">AI Content Generator</h1>
+        
+        <div class="input-group animate__animated animate__fadeInUp">
+            <textarea id="content-prompt" placeholder="Describe what you need (e.g., 'Professional 800-word blog post about AI ethics with 5 key points')"></textarea>
+            <div style="text-align: center;">
+                <button id="generate-btn" class="btn animate__animated animate__pulse animate__infinite animate__slower">Generate Content</button>
+            </div>
+        </div>
+        
+        <div class="result-container animate__animated animate__fadeInUp">
+            <div id="content-output" class="content-output">
+                <div class="placeholder-text">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 1rem;">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    <div>Your AI-generated content will appear here</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create floating particles
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size between 2px and 8px
+                const size = Math.random() * 6 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.bottom = `-${size}px`;
+                
+                // Random animation duration between 10s and 30s
+                const duration = Math.random() * 20 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                
+                // Random delay
+                particle.style.animationDelay = `${Math.random() * 10}s`;
+                
+                // Random opacity
+                particle.style.opacity = Math.random() * 0.3 + 0.1;
+                
+                particlesContainer.appendChild(particle);
+            }
+            
+            const generateBtn = document.getElementById('generate-btn');
+            const promptInput = document.getElementById('content-prompt');
+            const outputArea = document.getElementById('content-output');
+            
+            generateBtn.addEventListener('click', async function() {
+                const prompt = promptInput.value.trim();
+                if (!prompt) {
+                    alert('Please enter a content description');
+                    return;
+                }
+                
+                generateBtn.disabled = true;
+                outputArea.innerHTML = `
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        <div>Generating content with TinyLlama...</div>
+                    </div>
+                `;
+                
+                try {
+                    // Call Ollama LLam-3 API
+                    const response = await fetch('http://localhost:11434/api/generate', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            model: 'tinyllama',
+                            prompt: `Create professional content about: ${prompt}\n\nFormat with headings, paragraphs, and bullet points where appropriate. Bold the Headings. Response as fast as possible. Give necessary information. Avoid unnecessary information.\n\nContent:`,
+                            stream: false,
+                            options: {
+                                temperature: 0.7,
+                                max_tokens: 1500
+                            }
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    outputArea.innerHTML = formatContent(data.response);
+                    
+                } catch (error) {
+                    outputArea.innerHTML = `
+                        <div style="color: var(--danger); text-align: center; padding: 2rem;">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 1rem;">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                            <div>Error: ${error.message}</div>
+                            <div style="margin-top: 1rem; font-size: 0.9rem;">Ensure Ollama is running locally (ollama serve)</div>
+                        </div>
+                    `;
+                    console.error('Generation error:', error);
+                } finally {
+                    generateBtn.disabled = false;
+                }
+            });
+            
+            function formatContent(text) {
+                // Convert markdown-style formatting to HTML
+                let html = text
+                    .replace(/^# (.*$)/gm, '<h2>$1</h2>')
+                    .replace(/^## (.*$)/gm, '<h3>$1</h3>')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                    .replace(/^\* (.*$)/gm, '<li>$1</li>')
+                    .replace(/\n/g, '<br>');
+                
+                // Wrap consecutive list items in ul
+                html = html.replace(/(<li>.*?<\/li>(<br>)?)+/g, function(match) {
+                    return '<ul>' + match.replace(/<br>/g, '') + '</ul>';
+                });
+                
+                return html;
+            }
+            
+            // Add animation to textarea when focused
+            promptInput.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateY(-5px)';
+                this.parentElement.style.boxShadow = '0 25px 50px rgba(0,0,0,0.15)';
+            });
+            
+            promptInput.addEventListener('blur', function() {
+                this.parentElement.style.transform = '';
+                this.parentElement.style.boxShadow = '0 15px 35px rgba(0,0,0,0.1)';
+            });
+        });
+    </script>
+</body>
+</html>

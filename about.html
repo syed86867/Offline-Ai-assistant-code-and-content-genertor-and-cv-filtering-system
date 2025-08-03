@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About AI Agent</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4cc9f0;
+            --secondary: #3a0ca3;
+            --accent: #7209b7;
+            --dark: #212529;
+            --light: #f8f9fa;
+            --gradient: linear-gradient(135deg, var(--primary), var(--primary-light));
+            --glass: rgba(255, 255, 255, 0.15);
+            --shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e6f0ff 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Animated Background Elements */
+        .bg-blob {
+            position: fixed;
+            width: 700px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(67,97,238,0.15) 0%, rgba(76,201,240,0) 70%);
+            border-radius: 50%;
+            z-index: -1;
+            animation: float 12s ease-in-out infinite;
+        }
+        
+        .bg-blob:nth-child(1) {
+            top: -100px;
+            left: -100px;
+            animation-delay: 0s;
+        }
+        
+        .bg-blob:nth-child(2) {
+            bottom: -150px;
+            right: -100px;
+            animation-delay: 2s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(50px, 50px); }
+        }
+        
+        /* Header Styles */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            transition: var(--transition);
+        }
+        
+        header.scrolled {
+            padding: 0.5rem 2rem;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        
+        .logo i {
+            font-size: 1.5rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .nav-links a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient);
+            transition: var(--transition);
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .nav-links a:hover::before {
+            width: 100%;
+        }
+        
+        .nav-links a.active {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+        
+        /* Main Content */
+        .container {
+            max-width: 1000px;
+            margin: 6rem auto 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        h1, h2, h3 {
+            color: var(--secondary);
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeIn 1s ease-out;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            margin-top: 2rem;
+            border-bottom: 2px solid rgba(67, 97, 238, 0.2);
+            padding-bottom: 0.5rem;
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        h3 {
+            font-size: 1.4rem;
+            margin-top: 1.5rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+        
+        ul, ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+            position: relative;
+            left: 0;
+            transition: left 0.3s ease;
+        }
+        
+        li:hover {
+            left: 5px;
+        }
+        
+        .code-block {
+            background: var(--dark);
+            color: #abb2bf;
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            line-height: 1.5;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+        
+        .code-block:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        
+        .code-block::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary);
+            border-radius: 8px 0 0 8px;
+        }
+        
+        .feature-box {
+            background: rgba(67, 97, 238, 0.1);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .feature-box:hover {
+            transform: translateX(5px);
+            box-shadow: 5px 5px 15px rgba(67, 97, 238, 0.1);
+        }
+        
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .tech-item {
+            background: rgba(67, 97, 238, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .tech-item:hover {
+            background: rgba(67, 97, 238, 0.2);
+            transform: scale(1.05);
+            cursor: pointer;
+        }
+        
+        .tech-item i {
+            color: var(--primary);
+        }
+        
+        .model-architecture {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .arch-component {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .arch-component:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(67, 97, 238, 0.1);
+        }
+        
+        .arch-component h4 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .flow-chart-placeholder {
+            background: #f8f9fa;
+            border: 2px dashed #4361ee;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+            color: #4361ee;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .flow-chart-placeholder:hover {
+            background: rgba(67, 97, 238, 0.05);
+            border-style: solid;
+        }
+        
+        .model-specs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .spec-item {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .spec-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.1);
+
+        }
+        
+        .spec-item h4 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            margin-top: 3rem;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border-top: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-links a {
+            color: var(--dark);
+            text-decoration: none;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        .footer-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        .footer-links a:hover::after {
+            width: 100%;
+        }
+        
+        .copyright {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+                margin: 5rem 1rem 2rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .nav-links {
+                gap: 0.5rem;
+            }
+            
+            .nav-links a {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.9rem;
+            }
+            
+            .model-architecture, .model-specs {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="bg-blob"></div>
+    <div class="bg-blob"></div>
+    
+    <header id="header">
+        <nav>
+            <a href="/" class="logo">
+                <i class="fas fa-robot"></i>
+                AI Local Agent
+            </a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/code_writing.html">Code Writing</a>
+                <a href="/content_writing.html">Content Writing</a>
+                <a href="./CvFiltering-Final version/cv_filtering.html">CV Filtering</a>
+                <a href="/about.html" class="active">About Agent</a>
+            </div>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <h1>About AI Agent</h1>
+        
+        <section>
+            <h2>Understanding Large Language Models (LLMs)</h2>
+            <p>Large Language Models (LLMs) are advanced artificial intelligence systems trained on vast amounts of text data to understand and generate human-like language. These models represent a breakthrough in natural language processing (NLP) and form the foundation of modern AI assistants.</p>
+            
+            <div class="model-architecture">
+                <div class="arch-component">
+                    <h4><i class="fas fa-brain"></i> Core Architecture</h4>
+                    <p>LLMs are based on transformer architectures, using self-attention mechanisms to process and generate text. The "large" refers to both the model size (billions of parameters) and training data (trillions of tokens).</p>
+                </div>
+                
+                <div class="arch-component">
+                    <h4><i class="fas fa-graduation-cap"></i> Training Process</h4>
+                    <p>LLMs undergo two key training phases: pre-training on diverse text corpora to learn language patterns, and fine-tuning for specific tasks or behaviors using carefully curated datasets.</p>
+                </div>
+                
+                <div class="arch-component">
+                    <h4><i class="fas fa-magic"></i> Capabilities</h4>
+                    <p>Modern LLMs can perform tasks like text generation, translation, summarization, question answering, and code generation with remarkable proficiency.</p>
+                </div>
+            </div>
+            
+            <div class="feature-box">
+                <p><strong>Key Characteristics of LLMs:</strong></p>
+                <ul>
+                    <li><strong>Scale:</strong> Billions of parameters trained on trillions of tokens</li>
+                    <li><strong>Context Awareness:</strong> Can maintain context over long conversations</li>
+                    <li><strong>Transfer Learning:</strong> Knowledge from training applies to many tasks</li>
+                    <li><strong>Emergent Abilities:</strong> Demonstrate unexpected capabilities at scale</li>
+                </ul>
+            </div>
+        </section>
+        
+        <section>
+            <h2>Ollama: Local LLM Platform</h2>
+            <p>Ollama is an open-source platform designed to run large language models locally on your personal computer. It provides an efficient way to deploy and interact with LLMs without relying on cloud services.</p>
+            
+            <h3>Why Ollama is Special</h3>
+            <div class="feature-box">
+                <ul>
+                    <li><strong>Local Execution:</strong> Runs entirely on your hardware, keeping data private</li>
+                    <li><strong>Model Variety:</strong> Supports multiple LLMs (Llama, Starcoder, Gemma,TinyLlama etc.)</li>
+                    <li><strong>Optimized Performance:</strong> Uses quantization and hardware acceleration</li>
+                    <li><strong>Simple API:</strong> Standardized interface for different models</li>
+                    <li><strong>Cross-platform:</strong> Available for Windows, macOS, and Linux</li>
+                </ul>
+            </div>
+            
+            <h3>How Ollama Works</h3>
+            <p>Ollama operates as a local server that manages LLMs through a simple API:</p>
+            <ol>
+                <li><strong>Model Management:</strong> Downloads and stores models locally</li>
+                <li><strong>Inference Engine:</strong> Optimizes model execution for your hardware</li>
+                <li><strong>API Layer:</strong> Provides REST endpoints for applications to interact with models</li>
+                <li><strong>Memory Management:</strong> Efficiently handles model loading/unloading</li>
+            </ol>
+            
+            <div class="code-block">
+                # Typical Ollama workflow<br>
+                1. Install Ollama (brew install ollama)<br>
+                2. Download a model (ollama pull llama3)<br>
+                3. Start the server (ollama serve)<br>
+                4. Send requests to localhost:11434
+            </div>
+        </section>
+        
+        <section>
+            <h2>Our Multi-Model Approach</h2>
+            <p>Our project leverages Ollama's flexibility to use specialized models for different tasks, combining their strengths for optimal performance.</p>
+            
+            <h3>Why We Use Multiple Models</h3>
+            <div class="feature-box">
+                <ul>
+                    <li><strong>Task Specialization:</strong> Different models excel at different tasks</li>
+                    <li><strong>Resource Efficiency:</strong> Smaller models for simpler tasks</li>
+                    <li><strong>Performance Optimization:</strong> Balance between speed and quality</li>
+                    <li><strong>Flexibility:</strong> Can swap models as better options become available</li>
+                </ul>
+            </div>
+            
+            <h3>Model Comparison</h3>
+            <div class="model-specs">
+                <div class="spec-item">
+                    <h4><i class="fas fa-file-code"></i> StarCoder2</h4>
+                    <p>Specialized for code generation with 3B parameters</p>
+                </div>
+                <div class="spec-item">
+                    <h4><i class="fas fa-pen-fancy"></i> TinyLlama</h4>
+                    <p>1.1B parameter model optimized for fast content generation</p>
+                </div>
+                <div class="spec-item">
+                    <h4><i class="fas fa-file-alt"></i> CV Processing</h4>
+                    <p>Custom document processing pipeline (non-LLM)</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2><center>>--Content Generation Module--< </center></h2>
+            <p>Our content generation system uses TinyLlama model optimized for fast, high-quality text generation with minimal resource requirements.</p>
+            
+            <h3>Model Specifications</h3>
+            <div class="model-specs">
+                <div class="spec-item">
+                    <h4><i class="fas fa-microchip"></i> Model</h4>
+                    <p>TinyLlama 1.1B (1.1 billion parameters)</p>
+                </div>
+                <div class="spec-item">
+                    <h4><i class="fas fa-tachometer-alt"></i> Speed</h4>
+                    <p>~45 tokens/second on CPU</p>
+                </div>
+                <div class="spec-item">
+                    <h4><i class="fas fa-thermometer-half"></i> Temperature</h4>
+                    <p>0.7 (balanced creativity)</p>
+                </div>
+                <div class="spec-item">
+                    <h4><i class="fas fa-ruler"></i> Max Tokens</h4>
+                    <p>1500 tokens per response</p>
+                </div>
+                <div class="spec-item">
+                    <h4><i class="fas fa-database"></i> Training Data</h4>
+                    <p>Trained on 3 trillion tokens from diverse sources</p>
+                </div>
+                <div class="spec-item">
+                    <h4><i class="fas fa-memory"></i> Memory Use</h4>
+                    <p>~2GB RAM for efficient operation</p>
+                </div>
+            </div>
+            
+            <h2>WorkFlow Diagram</h2>
+            <div class="code-block">
+               <center><img src="/flowcharts/content.png" alt="" style="height: 500px;width: 500px;"></center>
+            </div>
+            
+            <h3>Prompt Engineering</h3>
+            <div class="code-block">
+                // Content Generation Prompt Template
+                "Create professional content about: {user_input}\n\n
+                Format with headings, paragraphs, and bullet points where appropriate.\n
+                Bold the Headings. Response as fast as possible.\n
+                Give necessary information. Avoid unnecessary information.\n\n
+                Content:"
+            </div>
+        </section>
+
+        <section>
+            <h2><center>>--Code Generation Module--< </center></h2>
+            <p>Our code generation system uses StarCoder2 model specifically fine-tuned for programming tasks across multiple languages.</p>
+            
+            <h3>Model Specifications</h3>
+            <div class="model-specs">
+                <div class="spec-item">
+                    <h4><i class="fas fa-microchip"></i> Model</h4>
+                    <p>StarCoder2:3b (3 billion parameters)</p>
+                </div>
+                <div class="spec-item">
+                    <h4><i class="fas fa-tachometer-alt"></i> Speed</h4>
+                    <p>~30 tokens/second on CPU</p>
+                </div>
+                <div class="spec-item">
+                    <h4><i class="fas fa-thermometer-half"></i> Temperature</h4>
+                    <p>0.3 (focused accuracy)</p>
+                </div>
+                <div class="spec-item">
+                    <h4><i class="fas fa-ruler"></i> Max Tokens</h4>
+                    <p>2000 tokens per response</p>
+                </div>
+                <div class="spec-item">
+                    <h4><i class="fas fa-code-branch"></i> Languages</h4>
+                    <p>Supports 80+ programming languages</p>
+                </div>
+                <div class="spec-item">
+                    <h4><i class="fas fa-laptop-code"></i> Specialization</h4>
+                    <p>Fine-tuned on 619 programming languages</p>
+                </div>
+            </div>
+            
+            <h3>PlantUML Diagram</h3>
+            <div class="code-block">
+              <center><img src="./flowcharts/code.png" alt="" style="height: 500px;width: 600px;"></center>
+            </div>
+            
+            <h3>Prompt Engineering</h3>
+            <div class="code-block">
+               <p> // Code Generation Prompt Template</p>
+                <p> "Write {language} code for: {user_input} </p>
+                <p>Requirements:\n</p>
+                <p>1. Complete implementation \n</p>
+                <p>2. Follow best practices \n</p>
+                <p>3. Include comments \n</p>
+                
+                
+                
+            </div>
+        </section>
+
+        <section>
+            <h2>System Architecture</h2>
+            <p>Our application follows a modular design that leverages both Ollama and custom components:</p>
+            
+            <div class="model-architecture">
+                <div class="arch-component">
+                    <h4><i class="fas fa-window-maximize"></i> Frontend</h4>
+                    <p>HTML/CSS/JavaScript interface that users interact with directly. Handles input collection and result display.</p>
+                </div>
+                
+                <div class="arch-component">
+                    <h4><i class="fas fa-server"></i> Flask Backend</h4>
+                    <p>Python server that processes requests, manages files, and coordinates between components.</p>
+                </div>
+                
+                <div class="arch-component">
+                    <h4><i class="fas fa-brain"></i> Ollama Service</h4>
+                    <p>Local LLM server running multiple models that handles all AI generation tasks.</p>
+                </div>
+            </div>
+            
+            <h3>Data Flow</h3>
+            <ol>
+                <li>User input received by frontend</li>
+                <li>Sent to Flask backend via HTTP</li>
+                <li>Backend formats prompt for Ollama</li>
+                <li>Ollama processes with appropriate model</li>
+                <li>Response returned through the chain</li>
+                <li>Formatted and displayed to user</li>
+            </ol>
+        </section>
+        
+        <section>
+            <h2>CV Filtering System</h2>
+            <p>Our specialized document processing pipeline demonstrates the versatility of local AI:</p>
+            
+            <h3>Technical Stack</h3>
+            <div class="tech-stack">
+                <div class="tech-item"><i class="fas fa-file-pdf"></i> pdfplumber (PDF extraction)</div>
+                <div class="tech-item"><i class="fas fa-file-word"></i> python-docx (DOCX processing)</div>
+                <div class="tech-item"><i class="fas fa-code"></i> Flask (backend server)</div>
+                <div class="tech-item"><i class="fas fa-search"></i> Text matching algorithms</div>
+            </div>
+            
+            <h3>Document Processing Flow</h3>
+            <div class="code-block">
+                # Python document processing example<br>
+                def extract_text(file_path):<br>
+                &nbsp;&nbsp;if file_path.endswith('.pdf'):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;with pdfplumber.open(file_path) as pdf:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return " ".join(page.extract_text() for page in pdf.pages)<br>
+                &nbsp;&nbsp;elif file_path.endswith('.docx'):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;doc = Document(file_path)<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;return " ".join(para.text for para in doc.paragraphs)
+            </div>
+            
+            <h3>PlantUML Diagram</h3>
+            <div class="code-block">
+               <img src="./flowcharts/cvfiltering.png" alt="">
+            </div>
+        </section>
+        
+        <section>
+            <h2>Getting Started</h2>
+            <p>To run this system locally:</p>
+            
+            <div class="feature-box">
+                <ol>
+                    <li>Install Ollama from <a href="https://ollama.com" target="_blank">ollama.com</a></li>
+                    <li>Download the models: 
+                        <code>ollama pull starcoder2:3b</code><br>
+                        <code>ollama pull tinyllama</code>
+                    </li>
+                    <li>Start Ollama: <code>ollama serve</code></li>
+                    <li>Install Python dependencies: <code>pip install flask pdfplumber python-docx</code></li>
+                    <li>Run the Flask server: <code>python app.py</code></li>
+                    <li>Open <code>index.html</code> in your browser</li>
+                </ol>
+            </div>
+            
+            <h3>System Requirements</h3>
+            <ul>
+                <li><strong>CPU:</strong> Modern x86-64 processor (Intel/AMD)</li>
+                <li><strong>RAM:</strong> Minimum 8GB (16GB recommended)</li>
+                <li><strong>Storage:</strong> 5GB+ for models and dependencies</li>
+                <li><strong>OS:</strong> Windows 10+, macOS 12+, or Linux</li>
+            </ul>
+        </section>
+    </div>
+    
+    <footer>
+        <div class="footer-links">
+            <a href="/">Home</a>
+            <a href="/code_writing.html">Code</a>
+            <a href="/content_writing.html">Content</a>
+            <a href="./CvFiltering-Final version/index.html">CVs</a>
+            <a href="/about.html">About</a>
+        </div>
+        <p class="copyright">© 2025 AI Local Agent | All Rights Reserved</p>
+    </footer>
+
+    <script>
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Animate elements when they come into view
+        const animateOnScroll = function() {
+            const elements = document.querySelectorAll('.model-architecture, .feature-box, .code-block');
+            
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.2;
+                
+                if (elementPosition < screenPosition) {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }
+            });
+        };
+
+        // Set initial state for animated elements
+        document.querySelectorAll('.model-architecture, .feature-box, .code-block').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        });
+
+        // Run once on load
+        animateOnScroll();
+        
+        // Then on scroll
+        window.addEventListener('scroll', animateOnScroll);
+
+        // Add pulse animation to CTA elements
+        const ctaElements = document.querySelectorAll('.btn, .logo, .nav-links a.active');
+        setInterval(() => {
+            ctaElements.forEach(el => {
+                el.style.animation = 'pulse 2s infinite';
+            });
+        }, 3000);
+    </script>
+</body>
+</html>

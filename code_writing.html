@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Generator - Llama-3 AI</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4cc9f0;
+            --secondary: #3a0ca3;
+            --accent: #7209b7;
+            --dark: #212529;
+            --light: #f8f9fa;
+            --code-bg: #282c34;
+            --code-text: #abb2bf;
+            --success: #4cc9f0;
+            --error: #f72585;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e6f0ff 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Animated background elements */
+        .bg-blob {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(67,97,238,0.08) 0%, rgba(76,201,240,0) 70%);
+            border-radius: 50%;
+            z-index: -1;
+            animation: float 15s ease-in-out infinite;
+        }
+        
+        .bg-blob:nth-child(1) {
+            top: -150px;
+            left: -150px;
+            animation-delay: 0s;
+        }
+        
+        .bg-blob:nth-child(2) {
+            bottom: -200px;
+            right: -100px;
+            animation-delay: 3s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(50px, 50px) rotate(5deg); }
+            50% { transform: translate(0, 30px) rotate(-5deg); }
+            75% { transform: translate(-30px, 50px) rotate(5deg); }
+        }
+        
+        header {
+            background: rgba(255, 255, 255, 0.97);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: all 0.4s ease;
+        }
+        
+        header.scrolled {
+            padding: 0.75rem 2rem;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.15);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .nav-links a:hover::before {
+            width: 100%;
+        }
+        
+        .nav-links a.active {
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            color: white;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--secondary);
+            font-size: 2.5rem;
+            background: linear-gradient(to right, var(--secondary), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            border-radius: 3px;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s ease;
+        }
+        
+        h1:hover::after {
+            transform: scaleX(1);
+        }
+        
+        .input-group {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+        
+        .input-group:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(67, 97, 238, 0.15);
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 1.2rem;
+            border: 2px solid rgba(233, 236, 239, 0.8);
+            border-radius: 12px;
+            min-height: 150px;
+            font-size: 1.05rem;
+            margin-bottom: 1.5rem;
+            resize: vertical;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            background-color: rgba(248, 249, 250, 0.8);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            background-color: white;
+            box-shadow: 0 0 0 4px rgba(114, 9, 183, 0.15), inset 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .language-selector {
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .language-selector label {
+            font-weight: 600;
+            color: var(--secondary);
+        }
+        
+        select {
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            border: 2px solid rgba(233, 236, 239, 0.8);
+            background-color: rgba(248, 249, 250, 0.8);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(114, 9, 183, 0.15);
+        }
+        
+        .btn-container {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            color: white;
+            padding: 1rem 2.2rem;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(67, 97, 238, 0.4);
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.7;
+            transform: none !important;
+            cursor: not-allowed;
+            background: linear-gradient(to right, #a0aec0, #cbd5e0);
+            box-shadow: none;
+        }
+        
+        .result-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 0;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            overflow: hidden;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+        
+        .result-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(67, 97, 238, 0.15);
+        }
+        
+        .code-header {
+            background: var(--code-bg);
+            color: white;
+            padding: 0.9rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .copy-btn {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        
+        .copy-btn:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-1px);
+        }
+        
+        pre {
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 1.8rem;
+            margin: 0;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Courier New', Courier, monospace;
+            line-height: 1.6;
+            tab-size: 4;
+            border-radius: 0 0 12px 12px;
+        }
+        
+        code {
+            font-family: 'Fira Code', 'Courier New', Courier, monospace;
+            white-space: pre;
+        }
+        
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            color: var(--primary);
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(72, 149, 239, 0.2);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .loading-spinner::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border: 4px solid transparent;
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1.5s linear infinite reverse;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            text-align: center;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; transform: scale(0.98); }
+            50% { opacity: 1; transform: scale(1.02); }
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+            font-size: 1.1rem;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            opacity: 0.7;
+        }
+        
+        .error-message {
+            color: var(--error);
+            text-align: center;
+            padding: 2rem;
+            font-weight: 500;
+            animation: shake 0.5s ease;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+        
+        .success-message {
+            color: var(--success);
+            text-align: center;
+            padding: 1rem;
+            font-weight: 500;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .input-group {
+                padding: 1.5rem;
+            }
+            
+            .nav-links {
+                gap: 0.8rem;
+            }
+            
+            .nav-links a {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Animated background elements -->
+    <div class="bg-blob"></div>
+    <div class="bg-blob"></div>
+    
+    <header id="header">
+        <nav>
+            <a href="/" class="logo">StarCoder Model</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/code_writing.html" class="active">Code</a>
+                <a href="/content_writing.html">Content</a>
+                <a href="./CvFiltering-Final version/cv_filtering.html">CV Filtering</a>
+                <a href="./about.html">About Agent</a>
+            </div>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <h1>AI Code Generator</h1>
+        
+        <div class="input-group">
+            <textarea id="code-prompt" placeholder="Describe the code you need (e.g., 'Python function to calculate factorial with error handling and docstring')"></textarea>
+            
+            <div class="language-selector">
+                <label for="language">Language: </label>
+                <select id="language">
+                    <option value="javascript">JavaScript</option>
+                    <option value="python">Python</option>
+                    <option value="java">Java</option>
+                    <option value="csharp">C#</option>
+                    <option value="php">PHP</option>
+                    <option value="cpp">C++</option>
+                    <option value="typescript">TypeScript</option>
+                    <option value="ruby">Ruby</option>
+                    <option value="swift">Swift</option>
+                    <option value="kotlin">Kotlin</option>
+                    <option value="go">Go</option>
+                    <option value="rust">Rust</option>
+                    <option value="scala">Scala</option>
+                    <option value="dart">Dart</option>
+                    <option value="r">R</option>
+                    <option value="perl">Perl</option>
+                    <option value="lua">Lua</option>
+                </select>
+            </div>
+            
+            <div class="btn-container">
+                <button id="generate-btn" class="btn">
+                    <i class="fas fa-code"></i> Generate Code
+                </button>
+            </div>
+        </div>
+        
+        <div class="result-container">
+            <div id="code-output">
+                <div class="empty-state">
+                    <i class="fas fa-code"></i>
+                    <div>Your generated code will appear here</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const generateBtn = document.getElementById('generate-btn');
+            const promptInput = document.getElementById('code-prompt');
+            const languageSelect = document.getElementById('language');
+            const outputArea = document.getElementById('code-output');
+            const header = document.getElementById('header');
+            
+            // Header scroll effect
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+            
+            // Animate elements on scroll
+            const animateOnScroll = function() {
+                const elements = document.querySelectorAll('.input-group, .result-container');
+                
+                elements.forEach(element => {
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const screenPosition = window.innerHeight / 1.2;
+                    
+                    if (elementPosition < screenPosition) {
+                        element.style.opacity = '1';
+                        element.style.transform = 'translateY(0)';
+                    }
+                });
+            };
+            
+            // Set initial state for animated elements
+            document.querySelectorAll('.input-group, .result-container').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            });
+            
+            // Run once on load
+            animateOnScroll();
+            
+            // Then on scroll
+            window.addEventListener('scroll', animateOnScroll);
+            
+            generateBtn.addEventListener('click', async function() {
+                const prompt = promptInput.value.trim();
+                const language = languageSelect.value;
+                
+                if (!prompt) {
+                    outputArea.innerHTML = `
+                        <div class="error-message">
+                            <i class="fas fa-exclamation-circle"></i><br>
+                            Please describe the code you want to generate
+                        </div>
+                    `;
+                    setTimeout(() => {
+                        outputArea.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-code"></i>
+                                <div>Your generated code will appear here</div>
+                            </div>
+                        `;
+                    }, 2000);
+                    return;
+                }
+                
+                generateBtn.disabled = true;
+                outputArea.innerHTML = `
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        <div class="loading-text">Generating ${language} code with StarCoder2...</div>
+                    </div>
+                `;
+                
+                try {
+                    // Call Ollama starcoder2:3b API
+                    const response = await fetch('http://localhost:11434/api/generate', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            model: 'starcoder2:3b',
+                            prompt: `Write ${language} code for: ${prompt}\n\nRequirements:\n1. Complete implementation\n2. Follow best practices\n3. be precise and accurate.\n4. Handle edge cases\n\nCode:\n`,
+                            stream: false,
+                            options: {
+                                temperature: 0.3,
+                                max_tokens: 2000
+                            }
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    displayGeneratedCode(data.response, language);
+                    
+                    // Show success message briefly
+                    const successMsg = document.createElement('div');
+                    successMsg.className = 'success-message';
+                    successMsg.innerHTML = '<i class="fas fa-check-circle"></i> Code generated successfully!';
+                    outputArea.prepend(successMsg);
+                    
+                    setTimeout(() => {
+                        successMsg.style.opacity = '0';
+                        setTimeout(() => successMsg.remove(), 300);
+                    }, 2000);
+                    
+                } catch (error) {
+                    outputArea.innerHTML = `
+                        <div class="error-message">
+                            <i class="fas fa-exclamation-triangle"></i><br>
+                            Error: ${error.message}<br>
+                            Ensure Ollama is running locally (ollama serve)
+                        </div>
+                    `;
+                    console.error('Code generation error:', error);
+                } finally {
+                    generateBtn.disabled = false;
+                }
+            });
+            
+            function displayGeneratedCode(code, language) {
+                // Format the code with syntax highlighting
+                const formattedCode = code.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                
+                outputArea.innerHTML = `
+                    <div class="code-header">
+                        <span><i class="fas fa-file-code"></i> ${language.toUpperCase()} CODE</span>
+                        <button class="copy-btn" onclick="copyToClipboard(this)">
+                            <i class="far fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <pre><code>${formattedCode}</code></pre>
+                `;
+                
+                // Add copy functionality
+                window.copyToClipboard = function(button) {
+                    const codeElement = outputArea.querySelector('code');
+                    const text = codeElement.textContent;
+                    
+                    navigator.clipboard.writeText(text).then(() => {
+                        const originalText = button.innerHTML;
+                        button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                        button.style.background = 'rgba(76, 201, 240, 0.2)';
+                        
+                        setTimeout(() => {
+                            button.innerHTML = originalText;
+                            button.style.background = 'rgba(255,255,255,0.1)';
+                        }, 2000);
+                    });
+                };
+            }
+        });
+    </script>
+</body>
+</html>
