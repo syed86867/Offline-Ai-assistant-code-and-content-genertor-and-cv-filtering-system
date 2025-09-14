@@ -1,8 +1,3 @@
-
-Of course. Here is the corrected `README.md` file that reflects the project structure where both `app.py` and the `data` folder are inside the `RAG` directory.
-
----
-
 # **Ollama AI Workbench**
 
 A powerful, self-hosted web application that leverages local AI models via Ollama to generate code, create content, and intelligently analyze resumes (RAG) — all running completely offline on your machine.
